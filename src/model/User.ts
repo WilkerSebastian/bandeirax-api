@@ -1,18 +1,20 @@
+import {v4 as uuidv4} from "uuid";
+
 export default class User {
     private id: string;
     private name: string;
     private email: string;
     private password: string;
     private active: boolean;
-    private isAadmin: boolean;
+    private isAdmin: boolean;
 
-    constructor(user: {id: string, name: string, email: string, password: string, active: boolean, isAdmin: boolean}) {
-        this.id = user.id;
+    constructor(user: {name: string, email: string, password: string}) {
+        this.id = uuidv4();
         this.name = user.name;
         this.email = user.email;
         this.password = user.password;
-        this.active = user.active;
-        this.isAadmin = user.isAdmin;   
+        this.active = false;
+        this.isAdmin = false;  
     }
 
     public setId(id: string): void {
@@ -36,7 +38,7 @@ export default class User {
     }
 
     public setIsAdmin(isAdmin: boolean): void {
-        this.isAadmin = isAdmin;
+        this.isAdmin = isAdmin;
     }
 
     public getId(): string {
@@ -60,7 +62,7 @@ export default class User {
     }
 
     public getIsAdmin(): boolean {        
-        return this.isAadmin;
+        return this.isAdmin;
     }
 
 }
