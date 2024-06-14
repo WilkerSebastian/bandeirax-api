@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 
 test("Banderiax user create", async() => {
 
-    const res = await fetch(`http://localhost:${PORT}/user/create/`, {
+    let res = await fetch(`http://localhost:${PORT}/user/create/`, {
         method: "POST",
         body: JSON.stringify({
             name: "test",
@@ -21,10 +21,42 @@ test("Banderiax user create", async() => {
         headers: { "Content-Type": "application/json" }
     })
 
-    const json = await res.json()
+    let json = await res.json()
 
     if (res.status != 201) throw new Error(json.message)
 
     expect(json.email).toBe("test@gmail.com")
+
+    res = await fetch(`http://localhost:${PORT}/user/create/`, {
+        method: "POST",
+        body: JSON.stringify({
+            name: "alphabet",
+            email: "clucati.him@gmail.com",
+            password: "locatehim",
+        }),
+        headers: { "Content-Type": "application/json" }
+    })
+
+    json = await res.json()
+
+    if (res.status != 201) throw new Error(json.message)
+    
+    expect(json.email).toBe("clucati.him@gmail.com")
+
+    res = await fetch(`http://localhost:${PORT}/user/create/`, {
+        method: "POST",
+        body: JSON.stringify({
+            name: "pedra lopus",
+            email: "vimbest@gmail.com",
+            password: "labaros los kaiser",
+        }),
+        headers: { "Content-Type": "application/json" }
+    })
+
+    json = await res.json()
+
+    if (res.status != 201) throw new Error(json.message)
+
+    expect(json.email).toBe("vimbest@gmail.com")
 
 })
