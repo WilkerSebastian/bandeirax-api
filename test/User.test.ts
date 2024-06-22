@@ -59,4 +59,18 @@ test("Banderiax user create", async() => {
 
     expect(json.email).toBe("vimbest@gmail.com")
 
+    res = await fetch(`http://localhost:${PORT}/user/create/`, {
+        method: "POST",
+        body: JSON.stringify({
+            name: null,
+            email: "vimbest@gmail.com",
+            password: "labaros los kaiser",
+        }),
+        headers: { "Content-Type": "application/json" }
+    })
+
+    json = await res.json()
+
+    expect(json.message).toBe(`Internal server error to create user`)
+
 })
