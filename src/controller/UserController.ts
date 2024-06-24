@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import User from "../model/User";
 import UserService from "../service/UserService";
 import { log } from "../utils/log";
+import { compare } from "bcryptjs"
 
 export default class UserController {
 
@@ -80,6 +81,41 @@ export default class UserController {
             this.CACHE_PAGE = await Bun.file("src/views/validate.html").text();
 
         res.send(this.CACHE_PAGE);
+
+    }
+
+    public static async verifiedLogin(req: Request, res: Response) {
+
+        try {
+         
+            const user = await UserService.getElementByEmail(req.params.email)
+
+            if (!user) return res.status(404).json({
+                message: "User not found"
+            });
+            
+            if(await compare(req.body.password, user.getPassword())) {
+
+                return res.status(200).json({
+                    message: "User validated successfully",
+                    data:user
+                })
+
+            }
+
+            return res.status(401).json({
+                message: "Wrong password"
+            })
+
+        } catch (error) {
+
+            await log(error)
+
+            return res.status(500).json({
+                message: `Internal server error to search user by email`
+            })          
+            
+        }
 
     }
 

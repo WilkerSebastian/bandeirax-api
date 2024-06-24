@@ -73,15 +73,21 @@ export default class UserService {
 
     }
 
+    public static async getElementByEmail(email: string): Promise<User> {
+
+        return (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" WHERE email=$1`, [email])).rows[0];
+
+    }
+
     public static async getElementById(id: string): Promise<User> {
 
-        return (await query(`SELECT id, name, email FROM public."user" WHERE id=$1`, [id])).rows[0];
+        return (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" WHERE id=$1`, [id])).rows[0];
 
     }
 
     public static async getAllElements(): Promise<User[]> {
 
-        return (await query(`SELECT id, name, email, active, "isAdmin" FROM public."user" ORDER BY id`)).rows;
+        return (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" ORDER BY id`)).rows;
 
     }
 
