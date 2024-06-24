@@ -8,4 +8,8 @@ router.get("/", HelperController.index)
 
 router.post("/user/create/", UserController.create)
 
+router.put("/user/validate/:id", UserController.validateView)
+
+router.get("/validate/:message", UserController.validateView)
+
 export default router;
