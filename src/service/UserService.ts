@@ -12,9 +12,9 @@ export default class UserService {
 
         await query(`
             INSERT INTO public."user"
-            (id, name, email, password, active, "isAdmin")
-            VALUES ($1, $2, $3, $4, $5, $6);`, 
-            [user.getId(), user.getName(), user.getEmail(), password, user.getActive(), user.getIsAdmin()]);
+            (id, name, email, password, active, "isAdmin", points)
+            VALUES ($1, $2, $3, $4, $5, $6, $7);`, 
+            [user.getId(), user.getName(), user.getEmail(), password, user.getActive(), user.getIsAdmin(), user.getPoints()]);
 
     }
 
@@ -60,6 +60,16 @@ export default class UserService {
             SET active=$1
             WHERE id=$2;`, 
             [active, id]);
+
+    }
+
+    public static async updatePoints(id: string, points: number) {
+
+        await query(`
+            UPDATE public."user"
+            SET points=$1
+            WHERE id=$2;`, 
+            [points, id]);
 
     }
 
