@@ -18,23 +18,7 @@ export default class UserService {
 
     }
 
-    public static async update(user: User, passUpdate:boolean = false) {
-
-        if (passUpdate) {
-
-            const salt = await bcrypt.genSalt(10)
-
-            const password = await bcrypt.hash(user.getPassword(), salt)
-
-            await query(`
-                UPDATE public."user"
-                SET name=$1, email=$2, password=$3
-                WHERE id=$4;`, 
-                [user.getName(), user.getEmail(), password, user.getId()]);
-
-            return;
-
-        }
+    public static async update(user: User) {
         
         await query(`
             UPDATE public."user"
@@ -88,6 +72,12 @@ export default class UserService {
     public static async getAllElements(): Promise<User[]> {
 
         return (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" ORDER BY id`)).rows;
+
+    }
+
+    public static async countElements(): Promise<number> {
+
+        return (await query(`SELECT COUNT(*) FROM public."user"`)).rows[0].count;
 
     }
 
