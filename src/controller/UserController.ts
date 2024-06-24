@@ -119,4 +119,49 @@ export default class UserController {
 
     }
 
+    public static async update(req: Request, res: Response) {
+
+        const user = new User(req.body);
+
+        try {
+
+            await UserService.update(user)
+
+            return res.status(200).json({
+                message: "User updated successfully"
+            })
+            
+        } catch (error) {
+  
+            await log(error)
+
+            return res.status(500).json({
+                message: `Internal server error to update user`
+            })
+
+        }
+
+    }
+
+    public static async delete(req: Request, res: Response) {
+
+        const id = Buffer.from(req.params.id).toString("utf-8");
+
+        try {
+            
+            await UserService.delete(id);
+
+        } catch (error) {
+
+            await log(error)
+
+            return res.status(500).json({
+                message: `Internal server error to delete user`
+            })
+
+        }
+
+    }
+
+
 } 

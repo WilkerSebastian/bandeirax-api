@@ -44,12 +44,12 @@ export default class UserService {
 
     }
 
-    public static async delete(user: User) {
+    public static async delete(id: string) {
 
         await query(`
             DELETE FROM public."user"
             WHERE id=$1;`, 
-            [user.getId()]);
+            [id]);
 
     }
 
