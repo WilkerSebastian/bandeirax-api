@@ -1,12 +1,14 @@
 import {v4 as uuidv4} from "uuid";
 
 export default class User {
+    
     private id: string;
     private name: string;
     private email: string;
     private password: string;
     private active: boolean;
     private isAdmin: boolean;
+    private points: number;
 
     constructor(user: {name: string, email: string, password: string}) {
         this.id = uuidv4();
@@ -14,7 +16,8 @@ export default class User {
         this.email = user.email;
         this.password = user.password;
         this.active = false;
-        this.isAdmin = false;  
+        this.isAdmin = false
+        this.points = 0;  
     }
 
     public setId(id: string): void {
@@ -41,6 +44,10 @@ export default class User {
         this.isAdmin = isAdmin;
     }
 
+    public setPoints(points: number): void {
+        this.points = points;
+    }
+
     public getId(): string {
         return this.id;
     }
@@ -63,6 +70,10 @@ export default class User {
 
     public getIsAdmin(): boolean {        
         return this.isAdmin;
+    }
+
+    public getPoints(): number {
+        return this.points;
     }
 
 }
