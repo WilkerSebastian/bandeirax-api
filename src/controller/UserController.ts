@@ -88,7 +88,7 @@ export default class UserController {
 
         try {
          
-            const user = await UserService.getElementByEmail(req.params.email)
+            const user = await UserService.getElementByEmail(req.body.email)
 
             if (!user) return res.status(404).json({
                 message: "User not found"
@@ -163,5 +163,25 @@ export default class UserController {
 
     }
 
+    public static async count(req: Request, res: Response) {
+
+        try {
+
+            return res.status(200).json({
+                message: "User count successfully",
+                count: await UserService.countElements()
+            })
+
+        } catch (error) {
+
+            await log(error)
+
+            return res.status(500).json({
+                message: `Internal server error to count users`
+            })
+
+        }
+
+    }
 
 } 
