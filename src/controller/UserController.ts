@@ -10,6 +10,11 @@ export default class UserController {
 
     public static async create(req: Request, res: Response) {
 
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
         try {
          
             const user = new User(req.body);
@@ -37,6 +42,11 @@ export default class UserController {
     }
 
     public static async validate(req: Request, res: Response) {
+
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
 
         const { idToken } = req.params;
 
@@ -86,6 +96,11 @@ export default class UserController {
 
     public static async verifiedLogin(req: Request, res: Response) {
 
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
         try {
          
             const user = await UserService.getElementByEmail(req.body.email)
@@ -121,6 +136,11 @@ export default class UserController {
 
     public static async update(req: Request, res: Response) {
 
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
         const user = new User(req.body);
 
         try {
@@ -145,6 +165,11 @@ export default class UserController {
 
     public static async delete(req: Request, res: Response) {
 
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
         const id = Buffer.from(req.params.id).toString("utf-8");
 
         try {
@@ -165,6 +190,11 @@ export default class UserController {
 
     public static async count(req: Request, res: Response) {
 
+        if (!this.checkApiKey(req.params.key))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
         try {
 
             return res.status(200).json({
@@ -181,6 +211,15 @@ export default class UserController {
             })
 
         }
+
+    }
+
+    private static checkApiKey(key:string) {
+
+        if (key == process.env.API_KEY)
+            return true;
+
+        return false
 
     }
 

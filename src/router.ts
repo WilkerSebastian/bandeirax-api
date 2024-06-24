@@ -6,18 +6,18 @@ const router = Router();
 
 router.get("/", HelperController.index)
 
-router.post(`/user/create/`, UserController.create)
+router.post(`/user/create/:key`, UserController.create)
 
-router.patch("/user/validate/:id", UserController.validateView)
+router.patch("/user/validate/:key/:id", UserController.validateView)
 
 router.get("/validate/:message", UserController.validateView)
 
-router.get("/user/verified/login/", UserController.verifiedLogin)
+router.get("/user/verified/login/:key", UserController.verifiedLogin)
 
-router.put("/user/update/", UserController.update)
+router.put("/user/update/:key", UserController.update)
 
 router.delete("/user/delete/:key/:id", UserController.delete)
 
-router.get("/user/count/", UserController.count)
+router.get("/user/count/:key", UserController.count)
 
 export default router;
