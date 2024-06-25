@@ -77,7 +77,7 @@ export default class UserService {
 
     public static async countElements(): Promise<number> {
 
-        return (await query(`SELECT COUNT(*) FROM public."user"`)).rows[0].count;
+        return parseInt((await query(`SELECT COUNT(*) FROM public."user"`)).rows[0].count);
 
     }
 

@@ -10,7 +10,7 @@ export default class UserController {
 
     public static async create(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
@@ -23,8 +23,9 @@ export default class UserController {
 
             return res.status(201).json({
                 message: "User created successfully",
+                id: user.getId(),
                 email: user.getEmail(),
-                validate: `${req.get("origin")}/user/validate/${user.getId()}`
+                validate: `${req.get("origin")}/user/validate/${Buffer.from(user.getId()).toString("utf-8")}`
             })
 
         } catch (e) {
@@ -43,7 +44,7 @@ export default class UserController {
 
     public static async validate(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
@@ -85,18 +86,18 @@ export default class UserController {
 
     public static async validateView(req: Request, res: Response) {
 
-        await log(this.CACHE_PAGE)
+        await log(UserController.CACHE_PAGE)
 
-        if (this.CACHE_PAGE)
-            this.CACHE_PAGE = await Bun.file("src/views/validate.html").text();
+        if (UserController.CACHE_PAGE)
+            UserController.CACHE_PAGE = await Bun.file("src/views/validate.html").text();
 
-        res.send(this.CACHE_PAGE);
+        res.send(UserController.CACHE_PAGE);
 
     }
 
     public static async verifiedLogin(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
@@ -136,7 +137,7 @@ export default class UserController {
 
     public static async update(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
@@ -165,16 +166,20 @@ export default class UserController {
 
     public static async delete(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
 
-        const id = Buffer.from(req.params.id).toString("utf-8");
+        const id = Buffer.from(req.params.id, "base64").toString("utf-8");
 
         try {
             
             await UserService.delete(id);
+
+            return res.status(200).json({
+                message: "User deleted successfully"
+            })
 
         } catch (error) {
 
@@ -190,16 +195,19 @@ export default class UserController {
 
     public static async count(req: Request, res: Response) {
 
-        if (!this.checkApiKey(req.params.key))
+        if (!(UserController.checkApiKey(req.params.key)))
             return res.status(401).json({
                message: "Unauthorized" 
             });
 
         try {
 
+            const count = await UserService.countElements()
+            
+
             return res.status(200).json({
                 message: "User count successfully",
-                count: await UserService.countElements()
+                count: count
             })
 
         } catch (error) {
@@ -214,12 +222,9 @@ export default class UserController {
 
     }
 
-    private static checkApiKey(key:string) {
+    private static checkApiKey(key:string | undefined): boolean {
 
-        if (key == process.env.API_KEY)
-            return true;
-
-        return false
+        return key === process.env.API_KEY;
 
     }
 
