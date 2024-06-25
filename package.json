@@ -3,7 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun clean && NODE_ENV=production bun  run ./src/index.ts",
+    "build": "bun build --entrypoints ./src/index.ts --outdir ./dist --target node",
+    "start-test": "bun clean && NODE_ENV=development bun run ./dist/index.js",
+    "start": "bun clean && NODE_ENV=production bun run ./dist/index.js",
     "dev": "bun clean && NODE_ENV=development bun --watch run ./src/index.ts",
     "test": "bun clean && bun test",
     "clean": "rm -rf logs/*.log"
