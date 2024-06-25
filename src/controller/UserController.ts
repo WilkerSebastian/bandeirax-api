@@ -3,6 +3,7 @@ import User from "../model/User";
 import UserService from "../service/UserService";
 import { log } from "../utils/log";
 import { compare } from "bcryptjs"
+import EmailService from "../service/EmailService";
 
 export default class UserController {
 
@@ -21,11 +22,19 @@ export default class UserController {
 
             await UserService.create(user)
 
+            const url = `${req.protocol + "://" + req.get("host")}/user/validate/${Buffer.from(user.getId()).toString("base64")}`
+
+            if (process.env.NODE_ENV == "production")
+                EmailService.sendEmail(url, {
+                    name: user.getName(),
+                    email: user.getEmail()
+                });
+
             return res.status(201).json({
                 message: "User created successfully",
                 id: user.getId(),
                 email: user.getEmail(),
-                validate: `${req.get("origin")}/user/validate/${Buffer.from(user.getId()).toString("utf-8")}`
+                validate: url
             })
 
         } catch (e) {
@@ -44,17 +53,12 @@ export default class UserController {
 
     public static async validate(req: Request, res: Response) {
 
-        if (!(UserController.checkApiKey(req.params.key)))
-            return res.status(401).json({
-               message: "Unauthorized" 
-            });
-
         const { idToken } = req.params;
-
-        const id = Buffer.from(idToken, "base64").toString("utf8");
 
         try {
 
+            const id = Buffer.from(idToken, "base64").toString("utf8");
+            
             const user = await UserService.getElementById(id)
          
             if (user) {
@@ -66,8 +70,10 @@ export default class UserController {
                         message: "User validated successfully"
                     });
 
-                return res.redirect(`${req.get("origin")}/user/validate/UGFyYWLDqW5zIGNhZGFzdHJvIGZpbmFsaXphZG8gY29tIHN1Y2Vzc28sIHJldG9ybmUgYW8gYXBsaWNhdGl2by4`)
+                return res.redirect(`${req.protocol + "://" + req.get("host")}/validate/UGFyYWLDqW5zIGNhZGFzdHJvIGZpbmFsaXphZG8gY29tIHN1Y2Vzc28sIHJldG9ybmUgYW8gYXBsaWNhdGl2by4`)
             }
+
+            throw new Error("user not found")
 
         } catch (error) {
  
@@ -78,7 +84,7 @@ export default class UserController {
                     message: "Failed to validate user"
                 });
             
-            return res.redirect(`${req.get("origin")}/user/validate/RmFsaGEgYW8gY2FkYXN0cmFyLCBhY2Vzc2UgdW1hIFVSTCB2w6FsaWRhLg==`)
+            return res.redirect(`${req.protocol + "://" + req.get("host")}/validate/RmFsaGEgYW8gY2FkYXN0cmFyLCBhY2Vzc2UgdW1hIFVSTCB2w6FsaWRhLg==`)
 
         }
 
@@ -88,7 +94,7 @@ export default class UserController {
 
         await log(UserController.CACHE_PAGE)
 
-        if (UserController.CACHE_PAGE)
+        if (!UserController.CACHE_PAGE) 
             UserController.CACHE_PAGE = await Bun.file("src/views/validate.html").text();
 
         res.send(UserController.CACHE_PAGE);

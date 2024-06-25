@@ -8,7 +8,7 @@ router.get("/", HelperController.index)
 
 router.post(`/user/create/:key`, UserController.create)
 
-router.patch("/user/validate/:key/:id", UserController.validateView)
+router.get("/user/validate/:idToken", UserController.validate)
 
 router.get("/validate/:message", UserController.validateView)
 

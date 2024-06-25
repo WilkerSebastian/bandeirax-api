@@ -24,8 +24,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
 
-        const p=location.pathname.split("/").filter(e => e);document.querySelector("#message").textContent=atob(p[p.length-1])
-
+        const p=location.pathname.split("/").filter(e => e);document.querySelector("#message").textContent=decodeURIComponent(atob(p[p.length-1]).split('').map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        
     </script>
 
 </body>
