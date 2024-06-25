@@ -55,7 +55,7 @@ test("User create", async () => {
         method: "POST",
         body: JSON.stringify({
             name: null,
-            email: "vimbest@gmail.com",
+            email: "vimbest65@gmail.com",
             password: "labaros los kaiser",
         }),
         headers: { "Content-Type": "application/json" }
