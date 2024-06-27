@@ -110,13 +110,13 @@ export default class UserController {
 
         try {
          
-            const user = await UserService.getElementByEmail(req.body.email)
+            const user = await UserService.getElementByEmail(req.query.email as string)
 
             if (!user) return res.status(404).json({
                 message: "User not found"
             });
             
-            if(await compare(req.body.password, user.getPassword())) {
+            if(await compare(req.query.password as string, user.getPassword())) {
 
                 return res.status(200).json({
                     message: "User validated successfully",

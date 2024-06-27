@@ -10,14 +10,14 @@ export default class User {
     private isAdmin: boolean;
     private points: number;
 
-    constructor(user: {name: string, email: string, password: string}) {
-        this.id = uuidv4();
+    constructor(user: {id?: string, name: string, email: string, password: string, active?: boolean, isAdmin?: boolean, points?: number}) {
+        this.id = user.id || uuidv4();
         this.name = user.name;
         this.email = user.email;
         this.password = user.password;
-        this.active = false;
-        this.isAdmin = false
-        this.points = 0;  
+        this.active = user.active || false;
+        this.isAdmin = user.isAdmin || false
+        this.points = user.points || 0;  
     }
 
     public setId(id: string): void {
