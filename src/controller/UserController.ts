@@ -228,6 +228,32 @@ export default class UserController {
 
     }
 
+    public static async getUser(req: Request, res: Response) {
+
+        if (!(UserController.checkApiKey(req.params.key)))
+            return res.status(401).json({
+               message: "Unauthorized" 
+            });
+
+        try {
+
+            const id = Buffer.from(req.query.id as string, "base64").toString("utf-8");
+
+            const user = await UserService.getElementById(id);
+            return res.status(200).json({
+                message: "User found successfully",
+                data: user
+            })
+        } catch (error) {    
+            await log(error)
+
+            return res.status(500).json({
+                message: `Internal server error to get user`
+            })
+        }
+
+    }
+
     private static checkApiKey(key:string | undefined): boolean {
 
         return key === process.env.API_KEY;

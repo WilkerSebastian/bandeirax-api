@@ -75,7 +75,16 @@ export default class UserService {
 
     public static async getElementById(id: string): Promise<User> {
 
-        return (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" WHERE id=$1`, [id])).rows[0];
+        const data = (await query(`SELECT id, name, email, active, "isAdmin", points FROM public."user" WHERE id=$1`, [id])).rows[0];
+
+        return new User({
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            active: data.active,
+            isAdmin: data.isAdmin,
+            points: data.points
+        })
 
     }
 

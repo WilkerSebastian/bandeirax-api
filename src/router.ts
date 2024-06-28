@@ -20,4 +20,6 @@ router.delete("/user/delete/:key/:id", UserController.delete)
 
 router.get("/user/count/:key", UserController.count)
 
+router.get("/user/:key", UserController.getUser)
+
 export default router;
