@@ -20,6 +20,22 @@ export default class UserService {
 
     public static async update(user: User) {
         
+        if (user.getPassword().trim() != "") {
+
+            const salt = await bcrypt.genSalt(10)
+
+            const password = await bcrypt.hash(user.getPassword(), salt)
+
+            await query(`
+                UPDATE public."user"
+                SET name=$1, email=$2, password=$3
+                WHERE id=$4;`, 
+                [user.getName(), user.getEmail(), password, user.getId()]);
+    
+            return
+
+        }
+
         await query(`
             UPDATE public."user"
             SET name=$1, email=$2

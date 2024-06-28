@@ -152,7 +152,25 @@ export default class UserController {
 
         try {
 
+            const lastUser = await UserService.getElementById(user.getId())
+
             await UserService.update(user)
+
+            if (user.getEmail() != lastUser?.getEmail() || user.getPassword() != "" ? user.getPassword() != lastUser?.getPassword() : false) {
+                
+                const url = `${req.protocol + "://" + req.get("host")}/user/validate/${Buffer.from(user.getId()).toString("base64")}`
+
+                if (process.env.NODE_ENV == "production")
+                    EmailService.sendEmail(url, {
+                        name: user.getName(),
+                        email: user.getEmail()
+                    });
+
+                return res.status(200).json({
+                    message: "Hard reset user",
+                })
+
+            }
 
             return res.status(200).json({
                 message: "User updated successfully"
